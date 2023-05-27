@@ -187,6 +187,15 @@ class EventsController extends BaseController
 
     public function getFutureEventsWithWorkshops()
     {
-        throw new \Exception('implement in coding task 2');
+        try {
+            $events = Event::with('workshops')
+                ->whereHas('workshops', function ($query) {
+                    $query->whereColumn('events.created_at', '<', 'workshops.start');
+                })
+                ->get();
+            return response()->json($events);
+        } catch (Exception $e) {
+            throw new \Exception('implement in coding task 2');
+        }
     }
 }
